@@ -40,11 +40,26 @@ namespace Wands_bhaptics
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
-                if (changeValue > 0f) tactsuitVr.PlaybackHaptics("Healing");
-                //tactsuitVr.LOG("UpdateHealth: " + __instance.Health.ToString());
+                if (changeValue > 0f)
+                {
+                    if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
+                }
                 if (__instance.Health == 0f) { tactsuitVr.StopHeartBeat(); return; }
                 if (__instance.Health <= 25f) tactsuitVr.StartHeartBeat();
                 else tactsuitVr.StopHeartBeat();
+            }
+        }
+
+        [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "UpdateMana", new Type[] { typeof(float) })]
+        public class bhaptics_UpdateMana
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
+            {
+                if (changeValue > 0f)
+                {
+                    if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
+                }
             }
         }
 
