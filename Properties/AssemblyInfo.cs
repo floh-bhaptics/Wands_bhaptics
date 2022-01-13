@@ -15,7 +15,7 @@ using MelonLoader;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: MelonInfo(typeof(Wands_bhaptics.Wands_bhaptics), "Wands_bhaptics", "1.0", "Florian Fahrenberger")]
+[assembly: MelonInfo(typeof(Wands_bhaptics.Wands_bhaptics), "Wands_bhaptics", "1.1", "Florian Fahrenberger")]
 [assembly: MelonGame("Cortopia Studios", "Wands")]
 // Durch Festlegen von ComVisible auf FALSE werden die Typen in dieser Assembly
 // für COM-Komponenten unsichtbar.  Wenn Sie auf einen Typ in dieser Assembly von

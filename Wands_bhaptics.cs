@@ -22,7 +22,8 @@ namespace Wands_bhaptics
             tactsuitVr.PlaybackHaptics("HeartBeat");
         }
 
-        
+        #region Teleport and Health
+
         [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerTeleportHandler), "Teleport", new Type[] { })]
         public class bhaptics_PlayerTeleport
         {
@@ -30,6 +31,20 @@ namespace Wands_bhaptics
             public static void Postfix()
             {
                 tactsuitVr.PlaybackHaptics("TeleportThrough");
+            }
+        }
+
+        [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "UpdateHealth", new Type[] { typeof(float) })]
+        public class bhaptics_UpdateHealth
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
+            {
+                if (changeValue > 0f) tactsuitVr.PlaybackHaptics("Healing");
+                //tactsuitVr.LOG("UpdateHealth: " + __instance.Health.ToString());
+                if (__instance.Health == 0f) { tactsuitVr.StopHeartBeat(); return; }
+                if (__instance.Health <= 25f) tactsuitVr.StartHeartBeat();
+                else tactsuitVr.StopHeartBeat();
             }
         }
 
@@ -63,6 +78,10 @@ namespace Wands_bhaptics
             }
         }
 
+        #endregion
+
+        #region Damage and casting
+
         [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "TakeDamage", new Type[] { typeof(Assets.Scripts.Enums.DamageType), typeof(float), typeof(Vector2) })]
         public class bhaptics_TakeDamage
         {
@@ -76,7 +95,9 @@ namespace Wands_bhaptics
                 float myAngle = hitAngle - playerRotation;
                 myAngle *= -1f;
                 float correctedAngle = 360f - myAngle;
-                tactsuitVr.LOG("Hit: " + correctedAngle.ToString());
+                //tactsuitVr.LOG("Hit: " + correctedAngle.ToString());
+                if (correctedAngle > 360f) correctedAngle -= 360f;
+                if (correctedAngle < 0f) correctedAngle += 360f;
                 tactsuitVr.PlayBackHit("Impact", correctedAngle, 0f);
             }
         }
@@ -92,20 +113,7 @@ namespace Wands_bhaptics
                 tactsuitVr.CastSpell("Fire", isRightHand);
             }
         }
-
-        [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "UpdateHealth", new Type[] { typeof(float) })]
-        public class bhaptics_UpdateHealth
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
-            {
-                if (changeValue > 0f) tactsuitVr.PlaybackHaptics("Healing");
-                //tactsuitVr.LOG("UpdateHealth: " + __instance.Health.ToString());
-                if (__instance.Health == 0f) { tactsuitVr.StopHeartBeat(); return; }
-                if (__instance.Health <= 25f) tactsuitVr.StartHeartBeat();
-                else tactsuitVr.StopHeartBeat();
-            }
-        }
+        #endregion
 
     }
 }
