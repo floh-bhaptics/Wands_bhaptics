@@ -9,15 +9,17 @@ using MelonLoader;
 using HarmonyLib;
 using MyBhapticsTactsuit;
 
+[assembly: MelonInfo(typeof(Wands_bhaptics.Wands_bhaptics), "Wands_bhaptics", "2.0.0", "Florian Fahrenberger")]
+[assembly: MelonGame("Cortopia Studios", "Wands")]
+
 namespace Wands_bhaptics
 {
     public class Wands_bhaptics : MelonMod
     {
         public static TactsuitVR tactsuitVr;
 
-        public override void OnApplicationStart()
+        public override void OnInitializeMelon()
         {
-            base.OnApplicationStart();
             tactsuitVr = new TactsuitVR();
             tactsuitVr.PlaybackHaptics("HeartBeat");
         }
